@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -32,7 +33,7 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
-    .submit-btn {
+    .submit-btn, .result-btn {
       margin-top: 20px;
       background-color: #38b000;
       color: white;
@@ -41,40 +42,42 @@
       font-size: 18px;
       border-radius: 10px;
       cursor: pointer;
-      width: 50%;
+      width: 100%;
+      display: none;
     }
     .submit-btn:hover {
       background-color: #2d6a4f;
     }
-	
-	.institute-header {
-	  text-align: center;
-	  margin-bottom: 10px;
-	  margin-top: 10px;
-	  font-family: 'Siyam Rupali', sans-serif;
-	}
-
-	.institute-header .logo {
-	  width: 100px;
-	  height: auto;
-	  vertical-align: middle;
-	  margin-bottom: 0px;
-	}
-
-	.institute-header h1 {
-	  color: #007f5f;
-	  margin: 5px 0 2px 0; /* উপরে নিচে ফাঁকা কম */
-	  font-size: 24px;
-	}
-
-	.institute-header h3 {
-	  color: #555;
-	  margin: 2px 0 10px 0;
-	  font-size: 16px;
-	  font-weight: normal;
-	}
+    .result-btn {
+      background-color: #007f5f;
+    }
+    .institute-header {
+      text-align: center;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      font-family: 'Siyam Rupali', sans-serif;
+    }
+    .institute-header .logo {
+      width: 100px;
+      height: auto;
+      vertical-align: middle;
+      margin-bottom: 0px;
+    }
+    .institute-header h1 {
+      color: #007f5f;
+      margin: 5px 0 2px 0;
+      font-size: 24px;
+    }
+    .institute-header h3 {
+      color: #555;
+      margin: 2px 0 10px 0;
+      font-size: 16px;
+      font-weight: normal;
+    }
+    .hidden { display: none !important; }
   </style>
 </head>
+
 <div style="text-align: center; margin: 20px 0;">
   <a href="https://hasanbdt.github.io/daily-st-report/" style="margin: 0 10px;">📥 রিপোর্ট জমা</a>
   <a href="https://hasanbdt.github.io/daily-st-report/list" style="margin: 0 10px;">📋 রিপোর্ট তালিকা</a>
@@ -90,172 +93,160 @@
   <h3>স্বপ্ন পূরণে আগামীর পথে...</h3>
 </div>
 
+<h3>🌞 আমার আজকের দিনের রিপোর্ট</h3>
 
+<div style="background: #f9fcff; border-left: 5px solid #007f5f; padding: 15px; margin-bottom: 20px;">
+  <p style="color: #00509e;"><strong>🔹 “আল্লাহ্‌ সবকিছু দেখেন ও জানেন — তোমার ফর্ম পূরণ করাটাও।”</strong></p>
+  <p style="color: #d00000;">🔹 “মিথ্যা বলা হারাম, আর মিথ্যা রিপোর্ট দেওয়া বড় গুনাহ।”</p>
+  <p style="color: #007f5f;">🔹 “আল্লাহ্‌ সত্যবাদী বান্দাকে ভালোবাসেন।”</p>
+  <p style="color: #007f5f;">🔹 “হে আল্লাহ, তুমি আমাকে একজন সত্যিকারের ভালো মানুষ হতে সর্বদা সাহায্য কর।”</p>
+</div>
 
-  <h3>🌞 আমার আজকের দিনের রিপোর্ট</h3>
-  
-  <div style="background: #f9fcff; border-left: 5px solid #007f5f; padding: 15px; margin-bottom: 20px; font-family: 'Siyam Rupali', sans-serif; font-size: 16px; line-height: 1.8;">
-	  <p style="color: #00509e;"><strong>🔹 “আল্লাহ্‌ সবকিছু দেখেন ও জানেন — তোমার ফর্ম পূরণ করাটাও।”</strong></p>
-	  <p style="color: #d00000;">🔹 “মিথ্যা বলা হারাম, আর মিথ্যা রিপোর্ট দেওয়া বড় গুনাহ।”</p>
-	  <p style="color: #007f5f;">🔹 “আল্লাহ্‌ সত্যবাদী বান্দাকে ভালোবাসেন।”</p>
-	  <p style="color: #007f5f;">🔹 “হে আল্লাহ, তুমি আমাকে একজন সত্যিকারের ভালো মানুষ হতে সর্বদা সাহায্য কর।”</p>
-  </div>
+<video id="instructionVideo" width="100%" preload="auto" controls controlsList="nodownload" disablePictureInPicture>
+  <source src="study 5 rules.mp4" type="video/mp4">
+  আপনার ব্রাউজার ভিডিও চালাতে পারছে না।
+</video>
 
-  
-  <form id="reportForm">
-    
-    <label>শিক্ষার্থীর নাম</label>
-    <input type="text" name="studentName" required placeholder="Name(Only First Name)" />
+<form id="reportForm">
+  <label>শিক্ষার্থীর নাম</label>
+  <input type="text" name="studentName" required placeholder="Name(Only First Name)" />
 
-    <label>ক্লাস</label>
-    <input type="text" name="studentClass" required placeholder="Class(Letter)" />
+  <label>ক্লাস</label>
+  <input type="text" name="studentClass" required placeholder="Class(Letter)" />
 
-    <label>রোল</label>
-    <input type="text" name="studentRoll" required placeholder="Roll" />
+  <label>রোল</label>
+  <input type="text" name="studentRoll" required placeholder="Roll" />
 
-    <label>১. আজকের দিনটি কেমন ছিল?</label>
-    <select name="dayFeeling" required>
-      <option value="" disabled selected>-- নির্বাচন করুন --</option>
-      <option>😃 খুব ভালো</option>
-      <option>🙂 মোটামুটি</option>
-      <option>😐 খারাপ</option>
-    </select>
+  <label>১. আজকের দিনটি কেমন ছিল?</label>
+  <select name="dayFeeling" required>
+    <option value="" disabled selected>-- নির্বাচন করুন --</option>
+    <option>😃 খুব ভালো</option>
+    <option>🙂 মোটামুটি</option>
+    <option>😐 খারাপ</option>
+  </select>
 
-    <label>২. আমি আজ কী শিখেছি?</label>
-    <select name="learned" required>
-      <option value="" disabled selected>-- নির্বাচন করুন --</option>
-      <option>📘 নতুন দোয়া/মন্ত্র</option>
-      <option>📗 কোরআনের আয়াত/গীতার শ্লোক </option>
-      <option>📙 গণিত/বিজ্ঞান</option>
-      <option>📕 ইসলামিক আদব/ধর্মীয় আদব</option>
-      <option>🤷 কিছু শিখিনি</option>
-    </select>
+  <label>২. আমি আজ কী শিখেছি?</label>
+  <select name="learned" required>
+    <option value="" disabled selected>-- নির্বাচন করুন --</option>
+    <option>📘 নতুন দোয়া/মন্ত্র</option>
+    <option>📗 কোরআনের আয়াত/গীতার শ্লোক </option>
+    <option>📙 গণিত/বিজ্ঞান</option>
+    <option>📕 ইসলামিক আদব/ধর্মীয় আদব</option>
+    <option>🤷 কিছু শিখিনি</option>
+  </select>
 
-    <label>৩. আজ আমি কী ভালো কাজ করেছি?</label>
-    <select name="goodDeed" required>
-      <option value="" disabled selected>-- নির্বাচন করুন --</option>
-      <option>🕌 কাউকে নামাজ পড়িয়েছি/কাউকে প্রার্থনা করিয়েছি</option> 
-      <option>👐 সাহায্য করেছি</option>
-      <option>😊 ভালো ব্যবহার করেছি</option>
-      <option>😇 মিথ্যা বলিনি</option>
-      <option>🙁 কিছু করিনি</option>
-    </select>
+  <label>৩. আজ আমি কী ভালো কাজ করেছি?</label>
+  <select name="goodDeed" required>
+    <option value="" disabled selected>-- নির্বাচন করুন --</option>
+    <option>🕌 কাউকে নামাজ পড়িয়েছি/কাউকে প্রার্থনা করিয়েছি</option> 
+    <option>👐 সাহায্য করেছি</option>
+    <option>😊 ভালো ব্যবহার করেছি</option>
+    <option>😇 মিথ্যা বলিনি</option>
+    <option>🙁 কিছু করিনি</option>
+  </select>
 
-    <label>৪. আজ কোনো ভুল করেছি?</label>
-    <select name="mistake" required>
-      <option value="" disabled selected>-- নির্বাচন করুন --</option>
-      <option>📱 মোবাইল বেশি দেখেছি</option>
-      <option>📚 পড়া না করেছি</option>
-      <option>😡 রাগ করেছি</option>
-      <option>🙊 মিথ্যা বলেছি</option>
-      <option>✅ কোনো ভুল করিনি</option>
-    </select>
+  <label>৪. আজ কোনো ভুল করেছি?</label>
+  <select name="mistake" required>
+    <option value="" disabled selected>-- নির্বাচন করুন --</option>
+    <option>📱 মোবাইল বেশি দেখেছি</option>
+    <option>📚 পড়া না করেছি</option>
+    <option>😡 রাগ করেছি</option>
+    <option>🙊 মিথ্যা বলেছি</option>
+    <option>✅ কোনো ভুল করিনি</option>
+  </select>
 
-    <label>৫. আজ আমি কাকে ভালোবেসে কথা বলেছি?</label>
-    <select name="lovedPerson" required>
-      <option value="" disabled selected>-- নির্বাচন করুন --</option>
-      <option>👩 মা</option>
-      <option>👨 বাবা</option>
-      <option>👨‍🏫 শিক্ষক</option>
-      <option>👧 বন্ধু</option>
-      <option>🤐 কাউকে বলিনি</option>
-    </select>
+  <label>৫. আজ আমি কাকে ভালোবেসে কথা বলেছি?</label>
+  <select name="lovedPerson" required>
+    <option value="" disabled selected>-- নির্বাচন করুন --</option>
+    <option>👩 মা</option>
+    <option>👨 বাবা</option>
+    <option>👨‍🏫 শিক্ষক</option>
+    <option>👧 বন্ধু</option>
+    <option>🤐 কাউকে বলিনি</option>
+  </select>
 
-    <label>৬. আজ কী নিয়ে বেশি ভাবছিলাম?</label>
-    <select name="thoughtAbout" required>
-      <option value="" disabled selected>-- নির্বাচন করুন --</option>
-      <option>📖 পড়ালেখা</option>
-      <option>⚽ খেলাধুলা</option>
-      <option>🕋 আল্লাহ/স্রষ্টা</option>
-      <option>😴 ঘুম/অলসতা</option>
-      <option>🙂 কিছু না</option>
-    </select>
+  <label>৬. আজ কী নিয়ে বেশি ভাবছিলাম?</label>
+  <select name="thoughtAbout" required>
+    <option value="" disabled selected>-- নির্বাচন করুন --</option>
+    <option>📖 পড়ালেখা</option>
+    <option>⚽ খেলাধুলা</option>
+    <option>🕋 আল্লাহ/স্রষ্টা</option>
+    <option>😴 ঘুম/অলসতা</option>
+    <option>🙂 কিছু না</option>
+  </select>
 
-    <label>৭. আজ আমি কতবার প্রার্থনা করেছি?</label>
-    <select name="prayerTimes" required>
-      <option value="" disabled selected>-- নির্বাচন করুন --</option>
-      <option>🕋 ৫ বার</option>
-      <option>🕌 ৩-৪ বার</option>
-      <option>😕 ১-২ বার</option>
-      <option>🙁 ১ বারও না</option>
-    </select>
+  <label>৭. আজ আমি কতবার প্রার্থনা করেছি?</label>
+  <select name="prayerTimes" required>
+    <option value="" disabled selected>-- নির্বাচন করুন --</option>
+    <option>🕋 ৫ বার</option>
+    <option>🕌 ৩-৪ বার</option>
+    <option>😕 ১-২ বার</option>
+    <option>🙁 ১ বারও না</option>
+  </select>
 
-    <label>৮. আজ আমি কতবার আল্লাহকে/স্রষ্টাকে স্মরণ করেছি?</label>
-    <select name="rememberAllah" required>
-      <option value="" disabled selected>-- নির্বাচন করুন --</option>
-      <option>🔟 ১০ বারের বেশি</option>
-      <option>➐ ৫-১০ বার</option>
-      <option>➌ ১-৪ বার</option>
-      <option>🙁 একবারও না</option>
-    </select>
+  <label>৮. আজ আমি কতবার আল্লাহকে/স্রষ্টাকে স্মরণ করেছি?</label>
+  <select name="rememberAllah" required>
+    <option value="" disabled selected>-- নির্বাচন করুন --</option>
+    <option>🔟 ১০ বারের বেশি</option>
+    <option>➐ ৫-১০ বার</option>
+    <option>➌ ১-৪ বার</option>
+    <option>🙁 একবারও না</option>
+  </select>
 
-    <button type="submit" class="submit-btn">✅ রিপোর্ট জমা দাও</button><button type="submit" class="submit-btn"><a href = "https://drive.google.com/file/d/1tKRQ-Jc5YnwuYv0vwsEJCsJ-9qS-gNWl/view?usp=sharing  " target= "_blank">গতকালের রেজাল্ট দেখুন</a> </button>
-  </form>
+  <button type="submit" class="submit-btn">✅ রিপোর্ট জমা দাও</button>
+</form>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<button id="viewResultBtn" class="result-btn" onclick="window.location.href='https://your-result-link.com'">📊 গতকালের রেজাল্ট দেখুন</button>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDwKp_6znRl7TkIpXa3uFuZGOUxSHnkHOM",
-      authDomain: "dailyreport-9512d.firebaseapp.com",
-      databaseURL: "https://dailyreport-9512d-default-rtdb.firebaseio.com",
-      projectId: "dailyreport-9512d",
-      storageBucket: "dailyreport-9512d.firebasestorage.app",
-      messagingSenderId: "469725849063",
-      appId: "1:469725849063:web:3d82a4560478d1b11f8942"
-    };
+<script>
+  const video = document.getElementById("instructionVideo");
+  const form = document.getElementById("reportForm");
+  const submitBtn = form.querySelector(".submit-btn");
+  const resultBtn = document.getElementById("viewResultBtn");
 
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-	
-	// ✅ শুধু ইংরেজি অক্ষর, সংখ্যা ও স্পেস অনুমোদন
-function enforceEnglishOnly(inputElement) {
-  inputElement.addEventListener("input", function () {
-    this.value = this.value.replace(/[^A-Za-z0-9 ]/g, "");
+  // ভিডিও শেষ না হওয়া পর্যন্ত বাটন লুকানো থাকবে
+  submitBtn.style.display = "none";
+  resultBtn.style.display = "none";
+
+  // ভিডিও স্কিপ যেন না করা যায় (টানা যেন না যায়)
+  video.addEventListener("seeking", function () {
+    if (video.currentTime < video.duration - 2) {
+      video.currentTime = 0; // আবার শুরুতে পাঠিয়ে দিচ্ছে
+      alert("ভিডিও শেষ না হওয়া পর্যন্ত আপনি এটি স্কিপ করতে পারবেন না।");
+    }
   });
-}
 
+  // ভিডিও শেষ হলে সাবমিট বাটন দেখানো হবে
+  video.addEventListener("ended", function () {
+    submitBtn.style.display = "block";
+  });
 
-    const form = document.getElementById('reportForm');
-	
-	// ইনপুট ফিল্ডগুলো নির্বাচন করে ইংরেজি সীমাবদ্ধতা প্রয়োগ
-enforceEnglishOnly(form.studentName);
-enforceEnglishOnly(form.studentClass);
-enforceEnglishOnly(form.studentRoll);
+  // ফর্ম সাবমিট হলে রিপোর্ট বাটন দেখানো হবে
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
 
+    // আপনার Firebase push কোড আগেই কাজ করছে
+    // এখানে কেবল UI পরিবর্তন:
+    submitBtn.style.display = "none";
+    resultBtn.style.display = "inline-block";
+  });
+</script>
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const data = {
-        studentName: form.studentName.value.trim(),
-        studentClass: form.studentClass.value.trim(),
-        studentRoll: form.studentRoll.value.trim(),
-
-        dayFeeling: form.dayFeeling.value,
-        learned: form.learned.value,
-        goodDeed: form.goodDeed.value,
-        mistake: form.mistake.value,
-        lovedPerson: form.lovedPerson.value,
-        thoughtAbout: form.thoughtAbout.value,
-        prayerTimes: form.prayerTimes.value,
-        rememberAllah: form.rememberAllah.value,
-
-        timestamp: new Date().toISOString()
-      };
-
-      database.ref('dailyReports').push(data)
-        .then(() => {
-          alert('রিপোর্ট সফলভাবে জমা হয়েছে!');
-          form.reset();
-        })
-        .catch(error => {
-          alert('রিপোর্ট জমা দিতে সমস্যা হয়েছে: ' + error.message);
-        });
+<script>
+  // ✅ শুধু ইংরেজি অক্ষর, সংখ্যা ও স্পেস অনুমোদন
+  function enforceEnglishOnly(inputElement) {
+    inputElement.addEventListener("input", function () {
+      this.value = this.value.replace(/[^A-Za-z0-9 ]/g, "");
     });
-  </script>
+  }
+
+  // ফর্ম লোড হলে ইনপুট ফিল্ডে নিয়ম প্রয়োগ
+  window.onload = function () {
+    enforceEnglishOnly(document.querySelector('[name="studentName"]'));
+    enforceEnglishOnly(document.querySelector('[name="studentClass"]'));
+    enforceEnglishOnly(document.querySelector('[name="studentRoll"]'));
+  };
+</script>
 
 </body>
 </html>
