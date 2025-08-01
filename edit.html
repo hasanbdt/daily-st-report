@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>রিপোর্ট এডিট করুন</title>
+  <style>
+    body {
+      font-family: "Siyam Rupali", sans-serif;
+      background: #fffdee;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #d35400;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .submit-btn {
+      margin-top: 20px;
+      background-color: #d35400;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .submit-btn:hover {
+      background-color: #a04000;
+    }
+	
+	.institute-header {
+	  text-align: center;
+	  margin-bottom: 10px;
+	  margin-top: 10px;
+	  font-family: 'Siyam Rupali', sans-serif;
+	}
+
+	.institute-header .logo {
+	  width: 100px;
+	  height: auto;
+	  vertical-align: middle;
+	  margin-bottom: 0px;
+	}
+
+	.institute-header h1 {
+	  color: #007f5f;
+	  margin: 5px 0 2px 0; /* উপরে নিচে ফাঁকা কম */
+	  font-size: 24px;
+	}
+
+	.institute-header h3 {
+	  color: #555;
+	  margin: 2px 0 10px 0;
+	  font-size: 16px;
+	  font-weight: normal;
+	}
+	
+  </style>
+</head>
+<body>
+
+<div class="institute-header">
+  <img src="epi.png" alt="Logo" class="logo" />
+  <h1>ইপিআই একাডেমি, ঢাকা</h1>
+  <h3>স্বপ্ন পূরণে আগামীর পথে...</h3>
+</div>
+
+  <h2>📝 রিপোর্ট এডিট করুন</h2>
+  <form id="editForm">
+    <label>শিক্ষার্থীর নাম:</label>
+    <input type="text" id="studentName" required>
+
+    <label>ক্লাস:</label>
+    <input type="text" id="studentClass" required>
+
+    <label>রোল:</label>
+    <input type="text" id="studentRoll" required>
+
+    <label>১. আজকের দিনটি কেমন ছিল?</label>
+    <select id="dayFeeling">
+      <option>😃 খুব ভালো</option>
+      <option>🙂 মোটামুটি</option>
+      <option>😐 খারাপ</option>
+    </select>
+
+    <label>২. আমি আজ কী শিখেছি?</label>
+    <select id="learned">
+      <option>📘 নতুন দোয়া/মন্ত্র</option>
+      <option>📗 কোরআনের আয়াত/গীতার শ্লোক</option>
+      <option>📙 গণিত/বিজ্ঞান</option>
+      <option>📕 ইসলামিক আদব/ধর্মীয় আদব</option>
+      <option>🤷 কিছু শিখিনি</option>
+    </select>
+
+    <label>৩. আজ আমি কী ভালো কাজ করেছি?</label>
+    <select id="goodDeed">
+      <option>🕌 কাউকে নামাজ পড়িয়েছি/কাউকে প্রার্থনা করিয়েছি</option>
+      <option>👐 সাহায্য করেছি</option>
+      <option>😊 ভালো ব্যবহার করেছি</option>
+      <option>😇 মিথ্যা বলিনি</option>
+      <option>🙁 কিছু করিনি</option>
+    </select>
+
+    <label>৪. আজ কোনো ভুল করেছি?</label>
+    <select id="mistake">
+      <option>📱 মোবাইল বেশি দেখেছি</option>
+      <option>📚 পড়া না করেছি</option>
+      <option>😡 রাগ করেছি</option>
+      <option>🙊 মিথ্যা বলেছি</option>
+      <option>✅ কোনো ভুল করিনি</option>
+    </select>
+
+    <label>৫. আজ আমি কাকে ভালোবেসে কথা বলেছি?</label>
+    <select id="lovedPerson">
+      <option>👩 মা</option>
+      <option>👨 বাবা</option>
+      <option>👨‍🏫 শিক্ষক</option>
+      <option>👧 বন্ধু</option>
+      <option>🤐 কাউকে বলিনি</option>
+    </select>
+
+    <label>৬. আজ কী নিয়ে বেশি ভাবছিলাম?</label>
+    <select id="thoughtAbout">
+      <option>📖 পড়ালেখা</option>
+      <option>⚽ খেলাধুলা</option>
+      <option>🕋 আল্লাহ/স্রষ্টা</option>
+      <option>😴 ঘুম/অলসতা</option>
+      <option>🙂 কিছু না</option>
+    </select>
+
+    <label>৭. আজ আমি কয় বার প্রার্থনা করেছি?</label>
+    <select id="prayerTimes">
+      <option>🕋 ৫ বার</option>
+      <option>🕌 ৩-৪ বার</option>
+      <option>😕 ১-২ বার</option>
+      <option>🙁 ১ বারও না</option>
+    </select>
+
+    <label>৮. আজ আমি কতবার আল্লাহকে/স্রষ্টাকে স্মরণ করেছি?</label>
+    <select id="rememberAllah">
+      <option>🔟 ১০ বারের বেশি</option>
+      <option>➐ ৫-১০ বার</option>
+      <option>➌ ১-৪ বার</option>
+      <option>🙁 একবারও না</option>
+    </select>
+
+    <button type="submit" class="submit-btn">🔁 আপডেট করুন</button>
+  </form>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDwKp_6znRl7TkIpXa3uFuZGOUxSHnkHOM",
+      authDomain: "dailyreport-9512d.firebaseapp.com",
+      databaseURL: "https://dailyreport-9512d-default-rtdb.firebaseio.com",
+      projectId: "dailyreport-9512d",
+      storageBucket: "dailyreport-9512d.firebasestorage.app",
+      messagingSenderId: "469725849063",
+      appId: "1:469725849063:web:3d82a4560478d1b11f8942"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const form = document.getElementById('editForm');
+
+    function setValue(id, value) {
+      document.getElementById(id).value = value || "";
+    }
+
+    function getValue(id) {
+      return document.getElementById(id).value;
+    }
+
+    // ডাটা লোড
+    if (id) {
+      db.ref("dailyReports/" + id).once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (data) {
+          setValue("studentName", data.studentName);
+          setValue("studentClass", data.studentClass);
+          setValue("studentRoll", data.studentRoll);
+          setValue("dayFeeling", data.dayFeeling);
+          setValue("learned", data.learned);
+          setValue("goodDeed", data.goodDeed);
+          setValue("mistake", data.mistake);
+          setValue("lovedPerson", data.lovedPerson);
+          setValue("thoughtAbout", data.thoughtAbout);
+          setValue("prayerTimes", data.prayerTimes);
+          setValue("rememberAllah", data.rememberAllah);
+        }
+      });
+    }
+
+    // সাবমিট
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const updatedData = {
+        studentName: getValue("studentName"),
+        studentClass: getValue("studentClass"),
+        studentRoll: getValue("studentRoll"),
+        dayFeeling: getValue("dayFeeling"),
+        learned: getValue("learned"),
+        goodDeed: getValue("goodDeed"),
+        mistake: getValue("mistake"),
+        lovedPerson: getValue("lovedPerson"),
+        thoughtAbout: getValue("thoughtAbout"),
+        prayerTimes: getValue("prayerTimes"),
+        rememberAllah: getValue("rememberAllah"),
+        timestamp: new Date().toISOString()
+      };
+
+      db.ref("dailyReports/" + id).set(updatedData).then(() => {
+        alert("✅ রিপোর্ট সফলভাবে আপডেট হয়েছে!");
+        window.location.href = "list.html";
+      });
+    });
+  </script>
+</body>
+</html>
