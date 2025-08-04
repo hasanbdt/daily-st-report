@@ -264,8 +264,7 @@
       thoughtAbout: getValue("thoughtAbout"),
       prayerTimes: getValue("prayerTimes"),
       rememberAllah: getValue("rememberAllah"),
-      timestamp: new Date().toISOString()
-    };
+      };
 
     db.ref("dailyReports/" + id).set(updatedData).then(() => {
       alert("✅ রিপোর্ট সফলভাবে আপডেট হয়েছে!");
@@ -276,3 +275,4 @@
 
 </body>
 </html>
+
