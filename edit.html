@@ -263,7 +263,8 @@
       lovedPerson: getValue("lovedPerson"),
       thoughtAbout: getValue("thoughtAbout"),
       prayerTimes: getValue("prayerTimes"),
-      rememberAllah: getValue("rememberAllah")
+      rememberAllah: getValue("rememberAllah"),
+      timestamp: new Date().toISOString()
       };
 
     db.ref("dailyReports/" + id).set(updatedData).then(() => {
@@ -275,5 +276,6 @@
 
 </body>
 </html>
+
 
 
