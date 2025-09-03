@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel — বাংলাদেশ টি এস সি ফাউন্ডেশন</title>
+  <style>
+    body { font-family:"Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header { background:#00695c; color:white; padding:1rem; text-align:center; }
+    main { padding:1rem; max-width:1200px; margin:auto; }
+    h2 { margin-top:2rem; }
+
+    .card { background:white; padding:1rem; border-radius:10px; margin:1rem 0; box-shadow:0 2px 6px rgba(0,0,0,.15); }
+    .card h3 { margin-top:0; }
+
+    table { width:100%; border-collapse:collapse; margin:1rem 0; }
+    th, td { border:1px solid #ddd; padding:0.6rem; text-align:left; }
+    th { background:#00695c; color:white; }
+    tr:nth-child(even){ background:#f9f9f9; }
+
+    .btn { padding:0.5rem 0.8rem; margin:0.1rem; border:none; border-radius:6px; cursor:pointer; font-size:0.9rem; }
+    .btn.print{background:#2196f3; color:#fff}
+    .btn.excel{background:#4caf50; color:#fff}
+    .btn.edit{background:#ff9800; color:#fff}
+    .btn.del{background:#f44336; color:#fff}
+    .btn.hide{background:#607d8b; color:#fff}
+    .btn.add{background:#00695c; color:#fff; margin-top:0.5rem}
+
+    .tools{margin-top:0.5rem}
+    .muted{color:#666; font-size:0.9rem}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>অ্যাডমিন প্যানেল</h1>
+  <p>বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+</header>
+
+<main>
+
+  <!-- Admin Settings -->
+  <div class="card">
+    <h3>সাইট সেটিংস</h3>
+    <label>ব্রেকিং নিউজ:</label>
+    <input id="breakingInput" style="width:100%; padding:0.5rem"><br><br>
+    <label>স্লোগান:</label>
+    <input id="sloganInput" style="width:100%; padding:0.5rem"><br><br>
+    <label>থিম অর্ডার (কমা দিয়ে):</label>
+    <input id="themeInput" style="width:100%; padding:0.5rem"><br><br>
+    <button class="btn edit" id="saveSettings">সেভ</button>
+  </div>
+
+  <!-- Members -->
+  <div class="card">
+    <h3>সদস্য তালিকা</h3>
+    <table id="membersTable">
+      <thead><tr><th>নাম</th><th>মোবাইল</th><th>ঠিকানা</th><th>অ্যাকশন</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="tools">
+      <button class="btn print" onclick="printTable('membersTable')">Print</button>
+      <button class="btn excel" onclick="exportExcel('membersTable')">Excel</button>
+      <button class="btn add" onclick="addRow('members')">নতুন সদস্য</button>
+    </div>
+  </div>
+
+  <!-- Posts -->
+  <div class="card">
+    <h3>পোস্ট/ডায়েরি</h3>
+    <table id="postsTable">
+      <thead><tr><th>শিরোনাম</th><th>বিস্তারিত</th><th>অ্যাকশন</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="tools">
+      <button class="btn print" onclick="printTable('postsTable')">Print</button>
+      <button class="btn excel" onclick="exportExcel('postsTable')">Excel</button>
+      <button class="btn add" onclick="addRow('posts')">নতুন পোস্ট</button>
+    </div>
+  </div>
+
+  <!-- Holidays -->
+  <div class="card">
+    <h3>ক্যালেন্ডার ছুটি</h3>
+    <table id="holidaysTable">
+      <thead><tr><th>তারিখ</th><th>বর্ণনা</th><th>অ্যাকশন</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="tools">
+      <button class="btn print" onclick="printTable('holidaysTable')">Print</button>
+      <button class="btn excel" onclick="exportExcel('holidaysTable')">Excel</button>
+      <button class="btn add" onclick="addRow('holidays')">নতুন ছুটি</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+  import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc } 
+    from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ===== Admin only access =====
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){ alert("লগইন করুন"); location.href="signup.html"; return; }
+    // check role
+    const snap = await getDocs(collection(db,"roles"));
+    let isAdmin=false;
+    snap.forEach(r=>{ if(r.id===user.uid && r.data().role==="admin") isAdmin=true; });
+    if(!isAdmin){ alert("শুধু এডমিন এক্সেস"); location.href="index.html"; }
+  });
+
+  // ===== Load Members =====
+  async function loadMembers(){
+    const tb=document.querySelector("#membersTable tbody");
+    tb.innerHTML="";
+    const snap=await getDocs(collection(db,"members"));
+    snap.forEach(d=>{
+      const v=d.data();
+      tb.innerHTML+=`<tr>
+        <td>${v.name||""}</td><td>${v.mobile||""}</td><td>${v.address||""}</td>
+        <td>
+          <button class="btn print">🖨</button>
+          <button class="btn excel">⬇</button>
+          <button class="btn edit">✏</button>
+          <button class="btn del" onclick="delDoc('members','${d.id}')">🗑</button>
+          <button class="btn hide">🙈</button>
+        </td>
+      </tr>`;
+    });
+  }
+  loadMembers();
+
+  // ===== Load Posts =====
+  async function loadPosts(){
+    const tb=document.querySelector("#postsTable tbody");
+    tb.innerHTML="";
+    const snap=await getDocs(collection(db,"posts"));
+    snap.forEach(d=>{
+      const v=d.data();
+      tb.innerHTML+=`<tr>
+        <td>${v.title||""}</td><td>${(v.content||"").slice(0,50)}</td>
+        <td>
+          <button class="btn edit">✏</button>
+          <button class="btn del" onclick="delDoc('posts','${d.id}')">🗑</button>
+        </td>
+      </tr>`;
+    });
+  }
+  loadPosts();
+
+  // ===== Load Holidays =====
+  async function loadHolidays(){
+    const tb=document.querySelector("#holidaysTable tbody");
+    tb.innerHTML="";
+    const snap=await getDocs(collection(db,"holidays"));
+    snap.forEach(d=>{
+      const v=d.data();
+      tb.innerHTML+=`<tr>
+        <td>${v.date||""}</td><td>${v.desc||""}</td>
+        <td>
+          <button class="btn edit">✏</button>
+          <button class="btn del" onclick="delDoc('holidays','${d.id}')">🗑</button>
+        </td>
+      </tr>`;
+    });
+  }
+  loadHolidays();
+
+  // ===== Delete Doc =====
+  window.delDoc=async function(coll,id){
+    if(confirm("ডিলিট করবেন?")){
+      await deleteDoc(doc(db,coll,id));
+      location.reload();
+    }
+  }
+
+  // ===== Add Row =====
+  window.addRow=async function(coll){
+    const data=prompt("নতুন ডকুমেন্ট JSON আকারে লিখুন");
+    if(!data) return;
+    try{
+      await addDoc(collection(db,coll), JSON.parse(data));
+      alert("সফলভাবে যুক্ত হয়েছে");
+      location.reload();
+    }catch{ alert("JSON Error"); }
+  }
+
+  // ===== Settings Save =====
+  document.getElementById("saveSettings").addEventListener("click",()=>{
+    alert("Settings saved (Demo)। চাইলে Firestore 'settings' কালেকশনে সেভ করবেন।");
+  });
+
+  // ===== Print & Excel =====
+  window.printTable=function(id){
+    const w=window.open();
+    w.document.write("<html><head><title>Print</title></head><body>");
+    w.document.write(document.getElementById(id).outerHTML);
+    w.document.write("</body></html>");
+    w.print(); w.close();
+  }
+  window.exportExcel=function(id){
+    let csv=[];
+    const rows=document.querySelectorAll("#"+id+" tr");
+    rows.forEach(r=>{
+      const cols=r.querySelectorAll("td,th");
+      let row=[]; cols.forEach(c=>row.push('"'+c.innerText+'"'));
+      csv.push(row.join(","));
+    });
+    const blob=new Blob([csv.join("\n")],{type:"text/csv"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download=id+".csv"; a.click();
+  }
+</script>
+
+</body>
+</html>
