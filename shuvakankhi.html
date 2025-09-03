@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>শুভাকাঙ্ক্ষী তালিকা</title>
+  <style>
+    body { font-family: "Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header, footer { background:#00695c; color:white; text-align:center; padding:1rem; }
+    main { padding:2rem; max-width:800px; margin:auto; }
+
+    form {
+      background:white; padding:1.5rem; border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      margin-bottom:2rem;
+    }
+    form input {
+      width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ccc; border-radius:5px;
+    }
+    form button {
+      width:100%; padding:0.8rem; background:#00695c; color:white;
+      border:none; border-radius:5px; cursor:pointer; font-weight:bold;
+    }
+    form button:hover { background:#004d40; }
+
+    h2 { margin-bottom:1rem; }
+
+    table {
+      width:100%; border-collapse:collapse; background:white;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+    }
+    th, td {
+      border:1px solid #ddd; padding:0.8rem; text-align:left;
+    }
+    th { background:#00695c; color:white; }
+    tr:nth-child(even) { background:#f9f9f9; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>শুভাকাঙ্ক্ষী তালিকা</h1>
+    <nav>
+      <a href="index.html" style="color:white;">হোম</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>নতুন শুভাকাঙ্ক্ষী যুক্ত করুন</h2>
+    <form id="wellWisherForm">
+      <input type="text" id="name" placeholder="নাম" required />
+      <input type="text" id="phone" placeholder="মোবাইল নম্বর" required />
+      <input type="text" id="address" placeholder="ঠিকানা" />
+      <button type="submit">সেভ করুন</button>
+    </form>
+
+    <h2>শুভাকাঙ্ক্ষী তালিকা</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>নাম</th>
+          <th>মোবাইল</th>
+          <th>ঠিকানা</th>
+        </tr>
+      </thead>
+      <tbody id="wellWisherList"></tbody>
+    </table>
+  </main>
+
+  <footer>
+    <p>© 2025 বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+  </footer>
+
+  <!-- Firebase Placeholder Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBS17HBSz9Z9LXx7jfHGubAFB5u2K0m_I",
+	  authDomain: "tsc-1-17edd.firebaseapp.com",
+	  projectId: "tsc-1-17edd",
+	  storageBucket: "tsc-1-17edd.firebasestorage.app",
+	  messagingSenderId: "615501240485",
+	  appId: "1:615501240485:web:045dfcee4228bc46cc154c",
+	  measurementId: "G-JKXT7CEKBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("wellWisherForm");
+    const list = document.getElementById("wellWisherList");
+
+    // নতুন শুভাকাঙ্ক্ষী যোগ
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const address = document.getElementById("address").value;
+
+      try {
+        await addDoc(collection(db, "wellWishers"), { name, phone, address });
+        alert("শুভাকাঙ্ক্ষী যুক্ত হয়েছে!");
+        form.reset();
+        loadWellWishers();
+      } catch (err) {
+        alert("ত্রুটি: " + err.message);
+      }
+    });
+
+    // তালিকা লোড
+    async function loadWellWishers() {
+      list.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "wellWishers"));
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const row = `<tr>
+          <td>${data.name}</td>
+          <td>${data.phone}</td>
+          <td>${data.address || ""}</td>
+        </tr>`;
+        list.innerHTML += row;
+      });
+    }
+    loadWellWishers();
+  </script>
+</body>
+</html>

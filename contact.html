@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>যোগাযোগ</title>
+  <style>
+    body { font-family:"Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header, footer { background:#00695c; color:white; text-align:center; padding:1rem; }
+    main { padding:2rem; max-width:800px; margin:auto; }
+
+    form {
+      background:white; padding:1.5rem; border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      margin-bottom:2rem;
+    }
+    form input, form textarea {
+      width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ccc; border-radius:5px;
+    }
+    form button {
+      width:100%; padding:0.8rem; background:#00695c; color:white;
+      border:none; border-radius:5px; cursor:pointer; font-weight:bold;
+    }
+    form button:hover { background:#004d40; }
+
+    table { width:100%; border-collapse:collapse; background:white; box-shadow:0 2px 6px rgba(0,0,0,0.15); }
+    th, td { border:1px solid #ddd; padding:0.8rem; text-align:left; }
+    th { background:#00695c; color:white; }
+    tr:nth-child(even) { background:#f9f9f9; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>যোগাযোগ</h1>
+    <nav>
+      <a href="index.html" style="color:white;">হোম</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>আমাদের সাথে যোগাযোগ করুন</h2>
+    <form id="contactForm">
+      <input type="text" id="name" placeholder="নাম" required />
+      <input type="email" id="email" placeholder="ইমেইল" required />
+      <textarea id="message" placeholder="মেসেজ লিখুন" required></textarea>
+      <button type="submit">পাঠান</button>
+    </form>
+
+    <h2>ইনবক্স</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>নাম</th>
+          <th>ইমেইল</th>
+          <th>মেসেজ</th>
+        </tr>
+      </thead>
+      <tbody id="inboxList"></tbody>
+    </table>
+  </main>
+
+  <footer>
+    <p>© 2025 বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+  </footer>
+
+  <!-- Firebase Placeholder Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBS17HBSz9Z9LXx7jfHGubAFB5u2K0m_I",
+	  authDomain: "tsc-1-17edd.firebaseapp.com",
+	  projectId: "tsc-1-17edd",
+	  storageBucket: "tsc-1-17edd.firebasestorage.app",
+	  messagingSenderId: "615501240485",
+	  appId: "1:615501240485:web:045dfcee4228bc46cc154c",
+	  measurementId: "G-JKXT7CEKBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("contactForm");
+    const inboxList = document.getElementById("inboxList");
+
+    // নতুন মেসেজ সেভ
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message").value;
+      await addDoc(collection(db, "messages"), { name, email, message });
+      alert("মেসেজ পাঠানো হয়েছে!");
+      form.reset();
+      loadMessages();
+    });
+
+    // ইনবক্স লোড
+    async function loadMessages() {
+      inboxList.innerHTML = "";
+      const snap = await getDocs(collection(db, "messages"));
+      snap.forEach(doc => {
+        const d = doc.data();
+        inboxList.innerHTML += `
+          <tr>
+            <td>${d.name}</td>
+            <td>${d.email}</td>
+            <td>${d.message}</td>
+          </tr>`;
+      });
+    }
+    loadMessages();
+  </script>
+</body>
+</html>

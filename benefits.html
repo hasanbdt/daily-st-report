@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>সদস্য সুবিধা</title>
+  <style>
+    body { font-family:"Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header, footer { background:#00695c; color:white; text-align:center; padding:1rem; }
+    main { padding:2rem; max-width:900px; margin:auto; }
+
+    /* Tabs */
+    .tabs { display:flex; background:#004d40; border-radius:8px; overflow:hidden; }
+    .tabs button {
+      flex:1; padding:1rem; background:#004d40; color:white; border:none; cursor:pointer;
+      font-weight:bold;
+    }
+    .tabs button.active { background:#00796b; }
+    .tab-content { display:none; padding:1.5rem; background:white; border-radius:0 0 8px 8px; box-shadow:0 2px 6px rgba(0,0,0,0.15); }
+    .tab-content.active { display:block; }
+
+    form input, form textarea {
+      width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ccc; border-radius:5px;
+    }
+    form button {
+      padding:0.8rem 1.2rem; background:#00695c; color:white; border:none; border-radius:5px;
+      cursor:pointer; font-weight:bold;
+    }
+    form button:hover { background:#004d40; }
+
+    table { width:100%; border-collapse:collapse; margin-top:1rem; background:white; }
+    th, td { border:1px solid #ddd; padding:0.8rem; text-align:left; }
+    th { background:#00695c; color:white; }
+    tr:nth-child(even) { background:#f9f9f9; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>সদস্য সুবিধা</h1>
+    <nav>
+      <a href="index.html" style="color:white;">হোম</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="transactions">হিসাব/লেনদেন</button>
+      <button class="tab-btn" data-tab="profile">প্রোফাইল</button>
+      <button class="tab-btn" data-tab="submissions">সাবমিশন</button>
+    </div>
+
+    <!-- হিসাব/লেনদেন -->
+    <div id="transactions" class="tab-content active">
+      <h2>হিসাব/লেনদেন যুক্ত করুন</h2>
+      <form id="transactionForm">
+        <input type="text" id="txnDetails" placeholder="বিস্তারিত" required />
+        <input type="number" id="amount" placeholder="টাকার পরিমাণ" required />
+        <button type="submit">সেভ করুন</button>
+      </form>
+      <h3>লেনদেন তালিকা</h3>
+      <table>
+        <thead><tr><th>বিস্তারিত</th><th>পরিমাণ</th></tr></thead>
+        <tbody id="txnList"></tbody>
+      </table>
+    </div>
+
+    <!-- প্রোফাইল -->
+    <div id="profile" class="tab-content">
+      <h2>প্রোফাইল তথ্য</h2>
+      <form id="profileForm">
+        <input type="text" id="fullName" placeholder="পুরো নাম" required />
+        <input type="text" id="mobile" placeholder="মোবাইল নম্বর" required />
+        <textarea id="address" placeholder="ঠিকানা"></textarea>
+        <button type="submit">আপডেট করুন</button>
+      </form>
+      <div id="profileInfo"></div>
+    </div>
+
+    <!-- সাবমিশন -->
+    <div id="submissions" class="tab-content">
+      <h2>সাবমিশন রেকর্ড</h2>
+      <form id="submissionForm">
+        <input type="text" id="submissionTitle" placeholder="শিরোনাম" required />
+        <textarea id="submissionText" placeholder="বিস্তারিত"></textarea>
+        <button type="submit">সাবমিট</button>
+      </form>
+      <h3>আমার সাবমিশন</h3>
+      <ul id="submissionList"></ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+  </footer>
+
+  <!-- Firebase Placeholder Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, setDoc, doc } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBS17HBSz9Z9LXx7jfHGubAFB5u2K0m_I",
+	  authDomain: "tsc-1-17edd.firebaseapp.com",
+	  projectId: "tsc-1-17edd",
+	  storageBucket: "tsc-1-17edd.firebasestorage.app",
+	  messagingSenderId: "615501240485",
+	  appId: "1:615501240485:web:045dfcee4228bc46cc154c",
+	  measurementId: "G-JKXT7CEKBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Tabs switching
+    const tabs = document.querySelectorAll(".tab-btn");
+    const contents = document.querySelectorAll(".tab-content");
+    tabs.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabs.forEach(b => b.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    // হিসাব/লেনদেন
+    const txnForm = document.getElementById("transactionForm");
+    const txnList = document.getElementById("txnList");
+    txnForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const details = document.getElementById("txnDetails").value;
+      const amount = document.getElementById("amount").value;
+      await addDoc(collection(db, "transactions"), { details, amount });
+      txnForm.reset();
+      loadTxns();
+    });
+    async function loadTxns() {
+      txnList.innerHTML = "";
+      const snap = await getDocs(collection(db, "transactions"));
+      snap.forEach(doc => {
+        const d = doc.data();
+        txnList.innerHTML += `<tr><td>${d.details}</td><td>${d.amount}</td></tr>`;
+      });
+    }
+    loadTxns();
+
+    // প্রোফাইল
+    const profileForm = document.getElementById("profileForm");
+    const profileInfo = document.getElementById("profileInfo");
+    profileForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fullName = document.getElementById("fullName").value;
+      const mobile = document.getElementById("mobile").value;
+      const address = document.getElementById("address").value;
+      await setDoc(doc(db, "profile", "myProfile"), { fullName, mobile, address });
+      alert("প্রোফাইল আপডেট হয়েছে!");
+      loadProfile();
+    });
+    async function loadProfile() {
+      profileInfo.innerHTML = "";
+      const snap = await getDocs(collection(db, "profile"));
+      snap.forEach(doc => {
+        const d = doc.data();
+        profileInfo.innerHTML = `
+          <h3>${d.fullName}</h3>
+          <p>মোবাইল: ${d.mobile}</p>
+          <p>ঠিকানা: ${d.address}</p>
+        `;
+      });
+    }
+    loadProfile();
+
+    // সাবমিশন
+    const submissionForm = document.getElementById("submissionForm");
+    const submissionList = document.getElementById("submissionList");
+    submissionForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("submissionTitle").value;
+      const text = document.getElementById("submissionText").value;
+      await addDoc(collection(db, "submissions"), { title, text });
+      submissionForm.reset();
+      loadSubmissions();
+    });
+    async function loadSubmissions() {
+      submissionList.innerHTML = "";
+      const snap = await getDocs(collection(db, "submissions"));
+      snap.forEach(doc => {
+        const d = doc.data();
+        submissionList.innerHTML += `<li><strong>${d.title}</strong>: ${d.text}</li>`;
+      });
+    }
+    loadSubmissions();
+  </script>
+</body>
+</html>

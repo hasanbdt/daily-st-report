@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>সাইনআপ / সাইনইন</title>
+  <style>
+    body { font-family: "Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header, footer { background:#00695c; color:white; text-align:center; padding:1rem; }
+    main { display:flex; justify-content:center; align-items:center; padding:2rem; }
+    form {
+      background:white; padding:2rem; border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      width:100%; max-width:400px;
+    }
+    h2 { text-align:center; margin-bottom:1rem; }
+    input {
+      width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ccc; border-radius:5px;
+    }
+    button {
+      width:100%; padding:0.8rem; background:#00695c; color:white; border:none; border-radius:5px;
+      cursor:pointer; font-weight:bold;
+    }
+    button:hover { background:#004d40; }
+    p { text-align:center; margin-top:1rem; }
+    a { color:#00695c; text-decoration:none; font-weight:bold; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>সাইনআপ / সাইনইন</h1>
+    <nav>
+      <a href="index.html" style="color:white;">হোম</a>
+    </nav>
+  </header>
+
+  <main>
+    <form id="authForm">
+      <h2 id="formTitle">সাইনআপ</h2>
+      <input type="email" id="email" placeholder="ইমেইল" required />
+      <input type="password" id="password" placeholder="পাসওয়ার্ড" required />
+      <button type="submit">সাবমিট</button>
+      <p id="toggleText">অ্যাকাউন্ট আছে? <a href="#" id="toggleLink">সাইনইন</a></p>
+    </form>
+  </main>
+
+  <footer>
+    <p>© 2025 বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+  </footer>
+
+  <!-- Firebase Placeholder Config -->
+  <script type="module">
+    // === Firebase SDK ===
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBS17HBSz9Z9LXx7jfHGubAFB5u2K0m_I",
+	  authDomain: "tsc-1-17edd.firebaseapp.com",
+	  projectId: "tsc-1-17edd",
+	  storageBucket: "tsc-1-17edd.firebasestorage.app",
+	  messagingSenderId: "615501240485",
+	  appId: "1:615501240485:web:045dfcee4228bc46cc154c",
+	  measurementId: "G-JKXT7CEKBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // === Auth Logic ===
+    const form = document.getElementById("authForm");
+    const formTitle = document.getElementById("formTitle");
+    const toggleText = document.getElementById("toggleText");
+    const toggleLink = document.getElementById("toggleLink");
+    let isSignup = true;
+
+    toggleLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      isSignup = !isSignup;
+      formTitle.innerText = isSignup ? "সাইনআপ" : "সাইনইন";
+      toggleText.innerHTML = isSignup
+        ? 'অ্যাকাউন্ট আছে? <a href="#" id="toggleLink">সাইনইন</a>'
+        : 'অ্যাকাউন্ট নেই? <a href="#" id="toggleLink">সাইনআপ</a>';
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        if (isSignup) {
+          await createUserWithEmailAndPassword(auth, email, password);
+          alert("সাইনআপ সফল!");
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+          alert("সাইনইন সফল!");
+          window.location.href = "index.html";
+        }
+      } catch (err) {
+        alert("ত্রুটি: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

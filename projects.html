@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>প্রকল্পসমূহ</title>
+  <style>
+    body { font-family:"Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header, footer { background:#00695c; color:white; text-align:center; padding:1rem; }
+    main { padding:2rem; max-width:900px; margin:auto; }
+
+    form {
+      background:white; padding:1.5rem; border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      margin-bottom:2rem;
+    }
+    form input, form textarea, form select {
+      width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ccc; border-radius:5px;
+    }
+    form button {
+      padding:0.8rem 1.2rem; background:#00695c; color:white; border:none; border-radius:5px;
+      cursor:pointer; font-weight:bold;
+    }
+    form button:hover { background:#004d40; }
+
+    table { width:100%; border-collapse:collapse; background:white; margin-top:1rem; }
+    th, td { border:1px solid #ddd; padding:0.8rem; text-align:left; }
+    th { background:#00695c; color:white; }
+    tr:nth-child(even) { background:#f9f9f9; }
+
+    .desc { font-size:0.9rem; color:#444; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>প্রকল্পসমূহ</h1>
+    <nav>
+      <a href="index.html" style="color:white;">হোম</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>নতুন প্রকল্প যুক্ত করুন</h2>
+    <form id="projectForm">
+      <input type="text" id="title" placeholder="প্রকল্পের নাম" required />
+      <textarea id="description" placeholder="বিস্তারিত"></textarea>
+      <select id="status">
+        <option value="চলমান">চলমান</option>
+        <option value="সম্পন্ন">সম্পন্ন</option>
+        <option value="পরিকল্পনায়">পরিকল্পনায়</option>
+      </select>
+      <button type="submit">সেভ করুন</button>
+    </form>
+
+    <h2>প্রকল্প তালিকা</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>নাম</th>
+          <th>স্ট্যাটাস</th>
+          <th>বিস্তারিত</th>
+        </tr>
+      </thead>
+      <tbody id="projectList"></tbody>
+    </table>
+  </main>
+
+  <footer>
+    <p>© 2025 বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+  </footer>
+
+  <!-- Firebase Placeholder Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBS17HBSz9Z9LXx7jfHGubAFB5u2K0m_I",
+	  authDomain: "tsc-1-17edd.firebaseapp.com",
+	  projectId: "tsc-1-17edd",
+	  storageBucket: "tsc-1-17edd.firebasestorage.app",
+	  messagingSenderId: "615501240485",
+	  appId: "1:615501240485:web:045dfcee4228bc46cc154c",
+	  measurementId: "G-JKXT7CEKBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("projectForm");
+    const list = document.getElementById("projectList");
+
+    // Add project
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        status: document.getElementById("status").value
+      };
+      await addDoc(collection(db, "projects"), data);
+      alert("প্রকল্প যুক্ত হয়েছে!");
+      form.reset();
+      loadProjects();
+    });
+
+    // Load projects
+    async function loadProjects() {
+      list.innerHTML = "";
+      const snap = await getDocs(collection(db, "projects"));
+      snap.forEach(doc => {
+        const d = doc.data();
+        list.innerHTML += `
+          <tr>
+            <td>${d.title}</td>
+            <td>${d.status}</td>
+            <td class="desc">${d.description || ""}</td>
+          </tr>`;
+      });
+    }
+    loadProjects();
+  </script>
+</body>
+</html>

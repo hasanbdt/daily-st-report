@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ইনভেস্ট</title>
+  <style>
+    body { font-family:"Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header, footer { background:#00695c; color:white; text-align:center; padding:1rem; }
+    main { padding:2rem; max-width:900px; margin:auto; }
+
+    .tabs { display:flex; background:#004d40; border-radius:8px; overflow:hidden; }
+    .tabs button {
+      flex:1; padding:1rem; background:#004d40; color:white; border:none;
+      cursor:pointer; font-weight:bold;
+    }
+    .tabs button.active { background:#00796b; }
+    .tab-content { display:none; padding:1.5rem; background:white; border-radius:0 0 8px 8px; box-shadow:0 2px 6px rgba(0,0,0,0.15); }
+    .tab-content.active { display:block; }
+
+    form input, form select {
+      width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ccc; border-radius:5px;
+    }
+    form button {
+      padding:0.8rem 1.2rem; background:#00695c; color:white; border:none; border-radius:5px;
+      cursor:pointer; font-weight:bold;
+    }
+    form button:hover { background:#004d40; }
+
+    table { width:100%; border-collapse:collapse; margin-top:1rem; background:white; }
+    th, td { border:1px solid #ddd; padding:0.8rem; text-align:left; }
+    th { background:#00695c; color:white; }
+    tr:nth-child(even) { background:#f9f9f9; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>ইনভেস্ট</h1>
+    <nav>
+      <a href="index.html" style="color:white;">হোম</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="entry">এন্ট্রি</button>
+      <button class="tab-btn" data-tab="details">ডিটেইলস</button>
+      <button class="tab-btn" data-tab="report">রিপোর্ট</button>
+    </div>
+
+    <!-- Entry -->
+    <div id="entry" class="tab-content active">
+      <h2>নতুন ইনভেস্ট এন্ট্রি</h2>
+      <form id="investForm">
+        <input type="text" id="name" placeholder="নাম" required />
+        <input type="text" id="mobile" placeholder="মোবাইল নম্বর" required />
+        <input type="text" id="term" placeholder="ইনভেস্ট টার্ম (মাস/বছর)" required />
+        <input type="number" id="rate" placeholder="রেট (%)" required />
+        <input type="number" id="share" placeholder="শেয়ার সংখ্যা" required />
+        <input type="text" id="witness" placeholder="সাক্ষীর নাম" />
+        <button type="submit">সেভ করুন</button>
+      </form>
+    </div>
+
+    <!-- Details -->
+    <div id="details" class="tab-content">
+      <h2>ইনভেস্ট ডিটেইলস</h2>
+      <table>
+        <thead><tr><th>নাম</th><th>মোবাইল</th><th>টার্ম</th><th>রেট</th><th>শেয়ার</th><th>সাক্ষী</th></tr></thead>
+        <tbody id="investList"></tbody>
+      </table>
+    </div>
+
+    <!-- Report -->
+    <div id="report" class="tab-content">
+      <h2>ইনভেস্ট রিপোর্ট</h2>
+      <table>
+        <thead><tr><th>নাম</th><th>মোবাইল</th><th>মোট শেয়ার</th><th>মোট ইনভেস্ট</th></tr></thead>
+        <tbody id="reportList"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+  </footer>
+
+  <!-- Firebase Placeholder Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBS17HBSz9Z9LXx7jfHGubAFB5u2K0m_I",
+	  authDomain: "tsc-1-17edd.firebaseapp.com",
+	  projectId: "tsc-1-17edd",
+	  storageBucket: "tsc-1-17edd.firebasestorage.app",
+	  messagingSenderId: "615501240485",
+	  appId: "1:615501240485:web:045dfcee4228bc46cc154c",
+	  measurementId: "G-JKXT7CEKBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Tabs switching
+    const tabs = document.querySelectorAll(".tab-btn");
+    const contents = document.querySelectorAll(".tab-content");
+    tabs.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabs.forEach(b => b.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    // Save new invest
+    const investForm = document.getElementById("investForm");
+    investForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById("name").value,
+        mobile: document.getElementById("mobile").value,
+        term: document.getElementById("term").value,
+        rate: parseFloat(document.getElementById("rate").value),
+        share: parseInt(document.getElementById("share").value),
+        witness: document.getElementById("witness").value
+      };
+      await addDoc(collection(db, "invests"), data);
+      alert("ইনভেস্ট সেভ হয়েছে!");
+      investForm.reset();
+      loadInvests();
+      loadReport();
+    });
+
+    // Load invests
+    const investList = document.getElementById("investList");
+    async function loadInvests() {
+      investList.innerHTML = "";
+      const snap = await getDocs(collection(db, "invests"));
+      snap.forEach(doc => {
+        const d = doc.data();
+        investList.innerHTML += `
+          <tr>
+            <td>${d.name}</td>
+            <td>${d.mobile}</td>
+            <td>${d.term}</td>
+            <td>${d.rate}%</td>
+            <td>${d.share}</td>
+            <td>${d.witness || ""}</td>
+          </tr>`;
+      });
+    }
+    loadInvests();
+
+    // Load report
+    const reportList = document.getElementById("reportList");
+    async function loadReport() {
+      reportList.innerHTML = "";
+      const snap = await getDocs(collection(db, "invests"));
+      const totals = {};
+      snap.forEach(doc => {
+        const d = doc.data();
+        if (!totals[d.mobile]) {
+          totals[d.mobile] = { name: d.name, mobile: d.mobile, share: 0, invest: 0 };
+        }
+        totals[d.mobile].share += d.share;
+        totals[d.mobile].invest += d.share * (d.rate || 0);
+      });
+      for (const key in totals) {
+        const t = totals[key];
+        reportList.innerHTML += `
+          <tr>
+            <td>${t.name}</td>
+            <td>${t.mobile}</td>
+            <td>${t.share}</td>
+            <td>${t.invest}</td>
+          </tr>`;
+      }
+    }
+    loadReport();
+  </script>
+</body>
+</html>

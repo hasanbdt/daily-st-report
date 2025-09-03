@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>আমার প্রোফাইল</title>
+  <style>
+    body { font-family:"Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header, footer { background:#00695c; color:white; text-align:center; padding:1rem; }
+    main { padding:2rem; max-width:800px; margin:auto; }
+
+    .card {
+      background:white; padding:1.5rem; margin:1rem 0; border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+    }
+    h2 { margin-bottom:1rem; }
+    table { width:100%; border-collapse:collapse; background:white; }
+    th, td { border:1px solid #ddd; padding:0.8rem; text-align:left; }
+    th { background:#00695c; color:white; }
+    tr:nth-child(even) { background:#f9f9f9; }
+
+    button {
+      padding:0.8rem 1.2rem; background:#d32f2f; color:white; border:none; border-radius:5px;
+      cursor:pointer; font-weight:bold; margin-top:1rem;
+    }
+    button:hover { background:#b71c1c; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>আমার প্রোফাইল</h1>
+    <nav>
+      <a href="index.html" style="color:white;">হোম</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>প্রোফাইল তথ্য</h2>
+      <p><strong>নাম:</strong> <span id="userName"></span></p>
+      <p><strong>ইমেইল:</strong> <span id="userEmail"></span></p>
+      <p><strong>মোবাইল:</strong> <span id="userMobile"></span></p>
+      <p><strong>ঠিকানা:</strong> <span id="userAddress"></span></p>
+    </div>
+
+    <div class="card">
+      <h2>আমার লেনদেন</h2>
+      <table>
+        <thead><tr><th>বিস্তারিত</th><th>পরিমাণ</th></tr></thead>
+        <tbody id="myTransactions"></tbody>
+      </table>
+    </div>
+
+    <button id="logoutBtn">লগআউট</button>
+  </main>
+
+  <footer>
+    <p>© 2025 বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+  </footer>
+
+  <!-- Firebase Placeholder Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, getDocs, query, where } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBS17HBSz9Z9LXx7jfHGubAFB5u2K0m_I",
+	  authDomain: "tsc-1-17edd.firebaseapp.com",
+	  projectId: "tsc-1-17edd",
+	  storageBucket: "tsc-1-17edd.firebasestorage.app",
+	  messagingSenderId: "615501240485",
+	  appId: "1:615501240485:web:045dfcee4228bc46cc154c",
+	  measurementId: "G-JKXT7CEKBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const userName = document.getElementById("userName");
+    const userEmail = document.getElementById("userEmail");
+    const userMobile = document.getElementById("userMobile");
+    const userAddress = document.getElementById("userAddress");
+    const txnList = document.getElementById("myTransactions");
+
+    // ব্যবহারকারীর তথ্য দেখানো
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        userEmail.textContent = user.email;
+
+        // প্রোফাইল ডেটা (Firestore এ "profiles" কালেকশনে user.uid ডকুমেন্ট)
+        const docRef = doc(db, "profiles", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          userName.textContent = data.fullName || "";
+          userMobile.textContent = data.mobile || "";
+          userAddress.textContent = data.address || "";
+        }
+
+        // লেনদেন ডেটা (transactions কালেকশন থেকে mobile/email দিয়ে ফিল্টার)
+        txnList.innerHTML = "";
+        const q = query(collection(db, "transactions"), where("email", "==", user.email));
+        const snap = await getDocs(q);
+        snap.forEach(d => {
+          const t = d.data();
+          txnList.innerHTML += `<tr><td>${t.details || ""}</td><td>${t.amount || 0}</td></tr>`;
+        });
+      } else {
+        alert("প্রথমে লগইন করুন!");
+        window.location.href = "signup.html";
+      }
+    });
+
+    // লগআউট
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      alert("লগআউট সফল!");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ডায়েরি / ব্লগ</title>
+  <style>
+    body { font-family:"Noto Sans Bengali", Arial, sans-serif; background:#f0f4f8; margin:0; }
+    header, footer { background:#00695c; color:white; text-align:center; padding:1rem; }
+    main { padding:2rem; max-width:900px; margin:auto; }
+
+    form {
+      background:white; padding:1.5rem; border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      margin-bottom:2rem;
+    }
+    form input, form textarea {
+      width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ccc; border-radius:5px;
+    }
+    form button {
+      width:100%; padding:0.8rem; background:#00695c; color:white;
+      border:none; border-radius:5px; cursor:pointer; font-weight:bold;
+    }
+    form button:hover { background:#004d40; }
+
+    .post { background:white; padding:1rem; margin:1rem 0; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.15); cursor:pointer; }
+    .post h3 { margin:0; }
+    .post-content { display:none; margin-top:0.5rem; color:#444; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>ডায়েরি / ব্লগ</h1>
+    <nav>
+      <a href="index.html" style="color:white;">হোম</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>নতুন পোস্ট লিখুন</h2>
+    <form id="postForm">
+      <input type="text" id="title" placeholder="শিরোনাম" required />
+      <textarea id="content" placeholder="বিস্তারিত" required></textarea>
+      <button type="submit">পোস্ট করুন</button>
+    </form>
+
+    <h2>সব পোস্ট</h2>
+    <div id="postList"></div>
+  </main>
+
+  <footer>
+    <p>© 2025 বাংলাদেশ টি এস সি ফাউন্ডেশন</p>
+  </footer>
+
+  <!-- Firebase Placeholder Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, serverTimestamp, orderBy, query } 
+      from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBS17HBSz9Z9LXx7jfHGubAFB5u2K0m_I",
+	  authDomain: "tsc-1-17edd.firebaseapp.com",
+	  projectId: "tsc-1-17edd",
+	  storageBucket: "tsc-1-17edd.firebasestorage.app",
+	  messagingSenderId: "615501240485",
+	  appId: "1:615501240485:web:045dfcee4228bc46cc154c",
+	  measurementId: "G-JKXT7CEKBW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const postForm = document.getElementById("postForm");
+    const postList = document.getElementById("postList");
+
+    // নতুন পোস্ট যোগ
+    postForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+      await addDoc(collection(db, "posts"), {
+        title, content, createdAt: serverTimestamp()
+      });
+      alert("পোস্ট যুক্ত হয়েছে!");
+      postForm.reset();
+      loadPosts();
+    });
+
+    // পোস্ট লোড
+    async function loadPosts() {
+      postList.innerHTML = "";
+      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      snap.forEach(doc => {
+        const d = doc.data();
+        const div = document.createElement("div");
+        div.className = "post";
+        div.innerHTML = `<h3>${d.title}</h3>
+          <div class="post-content">${d.content}</div>`;
+        div.addEventListener("click", () => {
+          const contentDiv = div.querySelector(".post-content");
+          contentDiv.style.display = contentDiv.style.display === "block" ? "none" : "block";
+        });
+        postList.appendChild(div);
+      });
+    }
+    loadPosts();
+  </script>
+</body>
+</html>
